@@ -71,9 +71,10 @@ type launchParams struct {
 }
 
 var installCmd = &cobra.Command{
-	Use:    "install",
+	Use:    "install [user]",
 	Short:  "installs the podman helper agent",
 	Long:   "installs the podman helper agent, which manages the /var/run/docker.sock link",
+	Args:   cobra.MaximumNArgs(1),
 	PreRun: silentUsage,
 	RunE:   install,
 }
@@ -84,7 +85,15 @@ func init() {
 }
 
 func install(cmd *cobra.Command, args []string) error {
-	userName, uid, homeDir, err := getUser()
+	inputUser := args[0]
+	if inputUser == "" {
+		var err error
+		inputUser, err = lookupUser()
+		if err != nil {
+			return err
+		}
+	}
+	userName, uid, homeDir, err := getUser(inputUser)
 	if err != nil {
 		return err
 	}

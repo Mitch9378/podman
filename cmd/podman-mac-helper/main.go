@@ -78,14 +78,20 @@ func getUserInfo(name string) (string, string, string, error) {
 	return elements[0], elements[2], elements[8], nil
 }
 
-func getUser() (string, string, string, error) {
+func lookupUser() (string, error) {
+
 	name, found := os.LookupEnv("SUDO_USER")
 	if !found {
 		name, found = os.LookupEnv("USER")
 		if !found {
-			return "", "", "", errors.New("could not determine user")
+			return "", errors.New("could not determine user")
 		}
 	}
+
+	return name, nil
+}
+
+func getUser(name string) (string, string, string, error) {
 
 	_, uid, home, err := getUserInfo(name)
 	if err != nil {
