@@ -148,6 +148,17 @@ func addPrefixFlag(cmd *cobra.Command) {
 	cmd.Flags().StringVar(&installPrefix, "prefix", defaultPrefix, "Sets the install location prefix")
 }
 
+func addUserFlag(cmd *cobra.Command) {
+	switch cmd.Name() {
+	case "install":
+		cmd.Flags().StringVar(&installPrefix, "user", "", "Install the helper for the provided user")
+	case "uninstall":
+		cmd.Flags().StringVar(&installPrefix, "user", "", "Uninstall the helper for the provided user")
+	default:
+		cmd.Flags().StringVar(&installPrefix, "user", "", "Runs the helper on behalf of the provided user")
+	}
+}
+
 func silentUsage(cmd *cobra.Command, args []string) {
 	cmd.SilenceUsage = true
 	cmd.SilenceErrors = true

@@ -13,28 +13,25 @@ import (
 )
 
 var uninstallCmd = &cobra.Command{
-	Use:    "uninstall [user]",
+	Use:    "uninstall",
 	Short:  "uninstalls the podman helper agent",
-	Long:   "uninstalls the podman helper agent, which manages the /var/run/docker.sock link",
+	Long:   "uninstalls the podman helper agent, which manages the /var/run/docker.sock link If no user is provided the current user is used.",
 	PreRun: silentUsage,
-	Args:   cobra.MaximumNArgs(1),
 	RunE:   uninstall,
 }
 
 func init() {
 	addPrefixFlag(uninstallCmd)
+	addUserFlag(uninstallCmd)
 	rootCmd.AddCommand(uninstallCmd)
 }
 
 func uninstall(cmd *cobra.Command, args []string) error {
 
-	var inputUser = ""
-	if len(args) != 0 {
-		inputUser = args[0]
-	}
+	var err error
+	inputUser := cmd.Flag("user").Value.String()
 
 	if inputUser == "" {
-		var err error
 		inputUser, err = lookupUser()
 		if err != nil {
 			return err
