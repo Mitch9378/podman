@@ -28,7 +28,11 @@ func init() {
 
 func uninstall(cmd *cobra.Command, args []string) error {
 
-	inputUser := args[0]
+	var inputUser = ""
+	if len(args) != 0 {
+		inputUser = args[0]
+	}
+
 	if inputUser == "" {
 		var err error
 		inputUser, err = lookupUser()
